@@ -35,7 +35,7 @@
 import db from "./firebaseInit"
 import {useRoute, useRouter} from 'vue-router'
 import { collection, updateDoc, getDocs, doc, query, where } from "firebase/firestore"; 
-import {ref} from "vue"
+import {ref, onMounted} from "vue"
 
 const route = useRoute()
 const router = useRouter()
@@ -44,35 +44,29 @@ const employee_id = ref(null)
 const name = ref("")
 const dept = ref("")
 const position = ref("")
+const segments = ref([]);
 
-const fetchData = async () =>{
-    const q =  query(collection(db, "employees"), where('employee_id', '==', route.params.employee_id));
+onMounted(async () => {
+     const q =  query(collection(db, "employees"), where('employee_id', '==', route.params.employee_id));
      const querySnapshot = await getDocs(q);
-         querySnapshot.forEach((doc) => {
+    querySnapshot.forEach((doc) => {
     employee_id.value =  doc.data().employee_id
     name.value =  doc.data().name
     dept.value =  doc.data().dept
     position.value =  doc.data().position
+    segments.value = doc.ref._key.path.segments;
 });
+    
+})
 
-}
-
-fetchData()
-
-const updateEmployee = async () =>{
-     const q =  query(collection(db, "employees"), where('employee_id', '==', route.params.employee_id));
-     const querySnapshot = await getDocs(q);
-     querySnapshot.forEach(document =>{
-         const segments = document.ref._key.path.segments;
-         const docRef = doc(db, "employees", segments[segments.length -1]);
-        updateDoc(docRef, {
+const updateEmployee = () =>{
+    const docRef = doc(db, "employees", segments.value[segments.value.length -1]);
+    updateDoc(docRef, {
     employee_id: employee_id.value,
     name: name.value,
     dept: dept.value,
     position: position.value
   }) 
-
-     })
        router.push({name: 'view-employee', params: {employee_id: employee_id.value}})
 }
 

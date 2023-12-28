@@ -19,7 +19,7 @@
 import db from './firebaseInit'
 import { collection, getDocs,  doc, deleteDoc, where, query } from "firebase/firestore"; 
 import {useRoute, useRouter} from 'vue-router'
-import {ref} from 'vue'
+import {onMounted, ref} from 'vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -28,34 +28,29 @@ const employee_id = ref(null)
 const name = ref("")
 const dept = ref("")
 const position = ref("")
+const segments = ref([]);
 
-const fetchData = async () =>{
+onMounted(async () =>{
     const q =  query(collection(db, "employees"), where('employee_id', '==', route.params.employee_id));
      const querySnapshot = await getDocs(q);
          querySnapshot.forEach((doc) => {
-            // console.log(doc.ref._key.path.segments[doc.ref._key.path.segments.length -1])
+    // console.log(doc.ref._key.path.segments[doc.ref._key.path.segments.length -1])
     employee_id.value =  doc.data().employee_id
     name.value =  doc.data().name
     dept.value =  doc.data().dept
     position.value =  doc.data().position
+    segments.value = doc.ref._key.path.segments;
+    
 });
-
-}
-
-fetchData()
+    
+})
 
 const deleteEmployee = async () =>{
     if(confirm('Are you sure?')){
-   const q =  query(collection(db, "employees"), where('employee_id', '==', route.params.employee_id));
-     const querySnapshot = await getDocs(q);
-     querySnapshot.forEach((document) => {
-        const segments = document.ref._key.path.segments;
-      deleteDoc(doc(db, "employees", segments[segments.length -1]));
+      deleteDoc(doc(db, "employees", segments.value[segments.value.length -1]));
       router.push('/')
-       });
     }
 }
-
 
 </script>
 

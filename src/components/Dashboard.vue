@@ -24,6 +24,7 @@ import db from './firebaseInit'
 import { collection, getDocs, orderBy, query } from "firebase/firestore"; 
 
 const employees = ref([])
+// const employ = ref([])
 
 onMounted(async ()=>{
     // const querySnapshot = await getDocs(collection(db, "employees"));
@@ -37,14 +38,14 @@ const data = {
     'name': doc.data().name,
     'dept': doc.data().dept,
     'position': doc.data().position
-
 }
 employees.value.push(data)
 
+
 });
+
+// employ.value.push(employees.value[0])
 })
-
-
 
 
 </script>

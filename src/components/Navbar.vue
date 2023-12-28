@@ -21,7 +21,6 @@ import { getAuth, signOut } from "firebase/auth";
 import {ref} from 'vue';
 
 const router = useRouter();
-
 const auth = getAuth();
 
 const isLoggedIn = ref(false);
@@ -42,8 +41,6 @@ if(auth.currentUser){
 isLoggedIn.value = true;
 currentUser.value = auth.currentUser.email;
 }
-
-
 
 </script>
 
