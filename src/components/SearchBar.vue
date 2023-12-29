@@ -5,7 +5,7 @@
         <div class="input-field">
           <input @change="onChange" id="search" type="search" v-model="search" required>
           <label class="label-icon" for="search"><i class="material-icons">search</i></label>
-          <i class="material-icons">close</i>
+          <i class="material-icons" @click="clear">close</i>
         </div>
       </form>
     </div>
@@ -17,7 +17,7 @@
 import {ref} from "vue"
 import {defineProps} from 'vue'
 
-const emit = defineEmits(['search-employees'])
+const emit = defineEmits(['search-employees', 'clear-text'])
 const search = ref("")
 
 const props = defineProps({
@@ -29,6 +29,10 @@ const props = defineProps({
 
 const onChange = () =>{
     emit('search-employees')
+}
+const clear = () =>{
+    emit('clear-text')
+    
 }
 </script>
 

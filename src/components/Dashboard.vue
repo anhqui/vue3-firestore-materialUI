@@ -1,6 +1,6 @@
 <template>
     <div id="dashboard">
-        <SearchBar @search-employees="searchEmployees" search="" />
+        <SearchBar @search-employees="searchEmployees" @clear-text="clearText" search="" />
        <ul class="collection with-header">
         <li class="collection-header"><h4>Employees</h4></li>
         <li v-for="employee in fitlerUsers" :key="employee.id" class="collection-item">
@@ -28,7 +28,6 @@ import { collection, getDocs, orderBy, query } from "firebase/firestore";
 const employees = ref([])
 const fitlerUsers = ref([])
 
-
 onMounted(async ()=>{
     // const querySnapshot = await getDocs(collection(db, "employees"));
     const q = query(collection(db, "employees"), orderBy('dept'));
@@ -53,6 +52,10 @@ fitlerUsers.value = [...employees.value]
     const searchEmployees = () => {
     const terms =  search.value.toLowerCase()
    fitlerUsers.value = employees.value.filter(user => user.name.toLowerCase().includes(terms))
+}
+const clearText = () =>{
+    search.value = ""
+    fitlerUsers.value = [...employees.value]
 }
 
 </script>
