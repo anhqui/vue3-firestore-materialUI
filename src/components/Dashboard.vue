@@ -1,8 +1,9 @@
 <template>
     <div id="dashboard">
+        <SearchBar @search-employees="searchEmployees" search="" />
        <ul class="collection with-header">
         <li class="collection-header"><h4>Employees</h4></li>
-        <li v-for="employee in employees" :key="employee.id" class="collection-item">
+        <li v-for="employee in fitlerUsers" :key="employee.id" class="collection-item">
             <div class="chip">
             {{employee.dept}}
             </div> 
@@ -19,12 +20,14 @@
 </template>
 
 <script setup>
+import SearchBar from "./SearchBar.vue"
 import {onMounted, ref} from 'vue'
 import db from './firebaseInit'
 import { collection, getDocs, orderBy, query } from "firebase/firestore"; 
 
 const employees = ref([])
-// const employ = ref([])
+const fitlerUsers = ref([])
+
 
 onMounted(async ()=>{
     // const querySnapshot = await getDocs(collection(db, "employees"));
@@ -41,12 +44,16 @@ const data = {
 }
 employees.value.push(data)
 
-
 });
 
-// employ.value.push(employees.value[0])
+fitlerUsers.value = [...employees.value]
+
 })
 
+    const searchEmployees = () => {
+    const terms =  search.value.toLowerCase()
+   fitlerUsers.value = employees.value.filter(user => user.name.toLowerCase().includes(terms))
+}
 
 </script>
 
